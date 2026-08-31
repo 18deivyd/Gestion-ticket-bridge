@@ -46,10 +46,8 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication'
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication', 'rest_framework.authentication.SessionAuthentication'),
+    'PAGE_SIZE': 15,
 }
 
 SIMPLE_JWT = {
@@ -157,7 +155,6 @@ BaseDatabaseWrapper.check_database_version_supported = lambda self: None
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://192.168.0.104:3000',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -167,7 +164,8 @@ CORS_ALLOW_HEADERS = list(default_headers) +[
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 SMTP_SERVER = 'mail.grupoloscar.net'
 SMTP_PORT = 465

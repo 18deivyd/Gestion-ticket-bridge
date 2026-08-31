@@ -29,6 +29,22 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         ('superUser', 'Super Usuario')
     ]
     
+    GRUPO_CHOICES = [
+        ('tecnologia', 'Tecnología'),
+        ('sistema', 'Sistema'),
+        ('davan_eleconstruc', 'Davan y Eleconstruc'),
+        ('somos_deporte', 'Somos Deporte'),
+        ('lompanes_alombarda', 'Lompanes y Alombarda'),
+        ('gestion_humana', 'Gestión Humana'),
+        ('proconsul_ipconstruc', 'Proconsul y Ipconstruc'),
+        ('grupo_loscar', 'Grupo LosCar'),
+        ('sata', 'SATA'),
+        ('legal', 'Legal'),
+        ('contabilidad', 'Contabilidad'),
+        ('salud_movil', 'Salud Móvil'),
+        ('nuevo_horizonte', 'Nuevo Horizonte'),
+    ]
+    
     # Campos existentes
     id_usuario = models.AutoField(primary_key=True)
     usuario_seccion = models.CharField(max_length=200, unique=True)
@@ -39,6 +55,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     # Nuevos campos
     correo = models.EmailField(max_length=254, unique=True, null=True, blank=True)
     rol = models.CharField(max_length=20, choices=ROLES_CHOICES, default='cliente')
+    grupo = models.CharField(max_length=30, choices=GRUPO_CHOICES, default='tecnologia')
     
     # Campos Obligatorios
     is_staff = models.BooleanField(default=False)
@@ -80,8 +97,19 @@ class Ticket(models.Model):
     ]
     
     GRUPO_CHOICES = [
-            ('tecnologia', 'Tecnología'),
-            ('sistema', 'Sistema'),
+        ('tecnologia', 'Tecnología'),
+        ('sistema', 'Sistema'),
+        ('davan_eleconstruc', 'Davan y Eleconstruc'),
+        ('somos_deporte', 'Somos Deporte'),
+        ('lompanes_alombarda', 'Lompanes y Alombarda'),
+        ('gestion_humana', 'Gestión Humana'),
+        ('proconsul_ipconstruc', 'Proconsul y Ipconstruc'),
+        ('grupo_loscar', 'Grupo LosCar'),
+        ('sata', 'SATA'),
+        ('legal', 'Legal'),
+        ('contabilidad', 'Contabilidad'),
+        ('salud_movil', 'Salud Móvil'),
+        ('nuevo_horizonte', 'Nuevo Horizonte'),
         ]
     
     id_ticket = models.AutoField(primary_key=True)
@@ -93,7 +121,7 @@ class Ticket(models.Model):
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='incidencia')
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='abierto')
     prioridad = models.CharField(max_length=20, choices=PRIORIDAD_CHOICES, default='media')
-    grupo = models.CharField(max_length=20, choices=GRUPO_CHOICES, default='tecnologia')
+    grupo = models.CharField(max_length=30, choices=GRUPO_CHOICES, default='tecnologia')
     
     # Relaciones de clave foránea
     creado_por = models.ForeignKey(
@@ -148,3 +176,17 @@ class RespuestaTicket(models.Model):
         
     def __str__(self):
         return f'Respuesta #{self.id_respuesta} en Ticket #{self.ticket.id_ticket}'
+    
+# 5. Modelo de  Imagenes
+class TicketAdjunto(models.Model):
+    id_adjunto =  models.AutoField(primary_key=True)
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='adjuntos')
+    archivo = models.FileField(upload_to='ticket_adjuntos/')
+    content_id = models.CharField(max_length=255, null=True, blank=True)
+    fecha_subida = models.DateField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'ticket_adjunto'
+    
+    def __str__(self):
+        return f'Adjunto #{self.id_adjunto} en Ticket #{self.ticket.id_ticket}'
